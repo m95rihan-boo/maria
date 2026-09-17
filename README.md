@@ -1,4 +1,4 @@
-# Oukal Haarstudio – Website
+# Firas Haarstudio – Website
 
 Premium single-page website for **Maria OUKAL Haarstudio OG**  
 Hofmühlgasse 1, 1060 Wien
