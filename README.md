@@ -1,42 +1,33 @@
-# Firas Haarstudio – Website
+# Maria Haarstudio — Wien
 
-Premium single-page website for **Maria OUKAL Haarstudio OG**  
-Hofmühlgasse 1, 1060 Wien
+Modern single-page website for **Maria Haarstudio** in Mariahilf, Vienna.
 
-## Features
+## Included
 
-- Elegant, warm design (ivory + charcoal + soft gold accent)
-- Fully responsive (mobile-first)
-- Smooth scroll animations
-- Sticky header with blur
-- Contact form (frontend-only demo)
-- Accessible navigation & reduced-motion support
-- Fast loading, no frameworks
+- Responsive editorial design with subtle 3D depth and motion
+- German marketing copy and local SEO metadata
+- Direct WhatsApp appointment requests with a prefilled message
+- Phone, Instagram, Google Maps, opening hours and address
+- Accessible mobile menu, dialogs and reduced-motion support
+- Local optimized images and no analytics or cookie banner dependency
+- Pure HTML, CSS and JavaScript — no build step and no paid hosting
 
-## How to use
+## Contact configured
 
-1. Open `index.html` in a browser, **or**
-2. Deploy the whole folder to any static host (Netlify, Vercel, GitHub Pages, own server).
+- WhatsApp: `+43 676 6881201`
+- Landline: `01 / 2086658`
+- Instagram: `@oukal_salon`
+- Address: Hofmühlgasse 1, 1060 Wien, Austria
 
-## What you should customize
+## GitHub Pages
 
-| Item | Location |
-|------|----------|
-| Phone number | Add in Contact section + Footer |
-| Opening hours | Add under Contact details |
-| Real team photos | Replace Unsplash images in Team + Gallery |
-| Real salon photos | Replace Gallery & Hero images |
-| Prices | Add a price list under Services if desired |
-| Form backend | Connect form to Formspree, Netlify Forms, or your email service |
-| Social links | Add Instagram / Facebook in footer if available |
-| Favicon | Add `favicon.ico` |
+1. Push the contents of this folder to the repository's `main` branch.
+2. In GitHub open **Settings → Pages**.
+3. Choose **Deploy from a branch**, select `main` and `/ (root)`.
+4. Save. GitHub will provide the public URL after deployment.
 
-## Tech
+All file references are relative, so the site works from a repository subpath such as `/maria/`.
 
-- Pure HTML + CSS + vanilla JS
-- Google Fonts: Cormorant Garamond + Outfit
-- No build step required
+## Images
 
----
-
-Designed with focus on **UI/UX**: generous whitespace, refined typography, subtle micro-interactions, and a calm luxury feel suitable for a Vienna hair studio.
+Editorial imagery is stored locally in `assets/` and sourced from Unsplash under the Unsplash license. Replace these with real salon photographs when available for the strongest brand trust.

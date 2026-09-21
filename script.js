@@ -1,114 +1,123 @@
-/* Oukal Haarstudio – Interactions */
-
+/* Maria Haarstudio — lightweight interactions, no dependencies */
 document.addEventListener("DOMContentLoaded", () => {
-  // Year in footer
-  const yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  const WHATSAPP_NUMBER = "436766881201";
+  const header = document.getElementById("siteHeader");
+  const menuButton = document.getElementById("menuButton");
+  const nav = document.getElementById("mainNav");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Header scroll state
-  const header = document.getElementById("header");
-  const onScroll = () => {
-    if (window.scrollY > 40) {
-      header.classList.add("scrolled");
-    } else {
-      header.classList.remove("scrolled");
-    }
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const updateHeader = () => header.classList.toggle("scrolled", window.scrollY > 18);
+  updateHeader();
+  window.addEventListener("scroll", updateHeader, { passive: true });
+
+  const closeMenu = () => {
+    nav.classList.remove("open");
+    menuButton.classList.remove("active");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Menü öffnen");
+    document.body.classList.remove("menu-open");
   };
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
 
-  // Mobile nav
-  const navToggle = document.getElementById("navToggle");
-  const nav = document.getElementById("nav");
-  const navLinks = nav.querySelectorAll(".nav__link, .btn--nav");
-
-  navToggle.addEventListener("click", () => {
-    const isOpen = nav.classList.toggle("open");
-    navToggle.classList.toggle("active", isOpen);
-    navToggle.setAttribute("aria-expanded", isOpen);
-    document.body.style.overflow = isOpen ? "hidden" : "";
+  menuButton.addEventListener("click", () => {
+    const open = !nav.classList.contains("open");
+    nav.classList.toggle("open", open);
+    menuButton.classList.toggle("active", open);
+    menuButton.setAttribute("aria-expanded", String(open));
+    menuButton.setAttribute("aria-label", open ? "Menü schließen" : "Menü öffnen");
+    document.body.classList.toggle("menu-open", open);
   });
+  nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeMenu(); });
 
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      nav.classList.remove("open");
-      navToggle.classList.remove("active");
-      navToggle.setAttribute("aria-expanded", "false");
-      document.body.style.overflow = "";
-    });
-  });
-
-  // Reveal on scroll
-  const reveals = document.querySelectorAll(".reveal");
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
+  const revealItems = document.querySelectorAll(".reveal");
+  if (reducedMotion || !("IntersectionObserver" in window)) {
+    revealItems.forEach((item) => item.classList.add("visible"));
+  } else {
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          revealObserver.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
       });
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-  );
-  reveals.forEach((el) => revealObserver.observe(el));
+    }, { threshold: 0.12, rootMargin: "0px 0px -45px" });
+    revealItems.forEach((item) => observer.observe(item));
+  }
 
-  // Contact form (demo – no backend)
-  const form = document.getElementById("contactForm");
-  const success = document.getElementById("formSuccess");
+  const availability = document.querySelector(".card-hours");
+  if (availability) {
+    const now = new Date();
+    const day = now.getDay();
+    const minutes = now.getHours() * 60 + now.getMinutes();
+    const isWeekday = day >= 1 && day <= 5;
+    const isSaturday = day === 6;
+    const isOpen = (isWeekday && minutes >= 540 && minutes < 1140) || (isSaturday && minutes >= 540 && minutes < 1020);
+    const label = availability.querySelector("small");
+    const time = availability.querySelector("strong");
+    const dot = availability.querySelector(".live-dot");
+    label.textContent = isOpen ? "JETZT GEÖFFNET" : "ÖFFNUNGSZEITEN";
+    time.textContent = isSaturday ? "09:00 – 17:00" : day === 0 ? "Montag ab 09:00" : "09:00 – 19:00";
+    dot.classList.toggle("is-closed", !isOpen);
+  }
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const name = form.name.value.trim();
-    const email = form.email.value.trim();
-
-    if (!name || !email) {
-      form.name.focus();
-      return;
-    }
-
-    // Visual feedback only
-    form.querySelectorAll("input, select, textarea, button").forEach((el) => {
-      el.disabled = true;
+  const bookingForm = document.getElementById("bookingForm");
+  const serviceField = document.getElementById("service");
+  document.querySelectorAll("[data-service]").forEach((button) => {
+    button.addEventListener("click", () => {
+      serviceField.value = button.dataset.service;
+      document.getElementById("termin").scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth" });
+      setTimeout(() => document.getElementById("name").focus({ preventScroll: true }), reducedMotion ? 0 : 650);
     });
+  });
 
-    setTimeout(() => {
-      success.hidden = false;
-      form.reset();
-      form.querySelectorAll("input, select, textarea, button").forEach((el) => {
-        el.disabled = false;
+  bookingForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!bookingForm.reportValidity()) return;
+    const data = new FormData(bookingForm);
+    const dayValue = data.get("day");
+    let formattedDay = "flexibel";
+    if (dayValue) {
+      const date = new Date(`${dayValue}T12:00:00`);
+      formattedDay = new Intl.DateTimeFormat("de-AT", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
+    }
+    const message = [
+      "Hallo Maria Haarstudio,",
+      "ich möchte gerne einen Termin anfragen.",
+      "",
+      `Name: ${data.get("name")}`,
+      `Leistung: ${data.get("service")}`,
+      `Wunschtag: ${formattedDay}`,
+      `Uhrzeit: ${data.get("time") || "flexibel"}`,
+      data.get("note") ? `Wunsch / Hinweis: ${data.get("note")}` : "",
+      "",
+      "Vielen Dank!"
+    ].filter(Boolean).join("\n");
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+  });
+
+  document.querySelectorAll("[data-dialog]").forEach((button) => {
+    button.addEventListener("click", () => document.getElementById(button.dataset.dialog).showModal());
+  });
+  document.querySelectorAll(".legal-dialog").forEach((dialog) => {
+    dialog.querySelector(".dialog-close").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (event) => {
+      const bounds = dialog.getBoundingClientRect();
+      const outside = event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom;
+      if (outside) dialog.close();
+    });
+  });
+
+  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  if (!reducedMotion && finePointer) {
+    document.querySelectorAll("[data-tilt]").forEach((card) => {
+      card.addEventListener("pointermove", (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(1100px) rotateX(${-y * 3}deg) rotateY(${x * 3}deg) translateY(-2px)`;
       });
-
-      // Hide success after a while
-      setTimeout(() => {
-        success.hidden = true;
-      }, 6000);
-    }, 600);
-  });
-
-  // Simple modal for Impressum / Datenschutz links
-  const modal = document.getElementById("impressum");
-  document.querySelectorAll('a[href="#impressum"], a[href="#datenschutz"]').forEach((link) => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      modal.hidden = false;
-      document.body.style.overflow = "hidden";
+      card.addEventListener("pointerleave", () => { card.style.transform = ""; });
     });
-  });
-
-  modal.querySelectorAll("[data-close]").forEach((el) => {
-    el.addEventListener("click", () => {
-      modal.hidden = true;
-      document.body.style.overflow = "";
-    });
-  });
-
-  // Close modal on Escape
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !modal.hidden) {
-      modal.hidden = true;
-      document.body.style.overflow = "";
-    }
-  });
+  }
 });
