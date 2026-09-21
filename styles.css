@@ -42,3 +42,37 @@
 .map-pin span{border-radius:50%;transform:none;position:relative}
 .map-pin span::after{content:"";position:absolute;left:50%;bottom:-10px;width:20px;height:20px;background:var(--peach);transform:translateX(-50%) rotate(45deg);border-radius:0 0 5px 0;z-index:-1}
 .map-pin i{margin-top:16px}
+
+/* Compact mobile navigation sheet */
+@media(max-width:820px){
+  .main-nav{
+    inset:8px 8px auto;
+    width:auto;
+    min-height:0;
+    padding:82px 22px 22px;
+    justify-content:flex-start;
+    gap:0;
+    border:1px solid rgba(23,20,18,.08);
+    border-radius:24px;
+    background:rgba(255,250,243,.98);
+    box-shadow:0 24px 70px rgba(23,20,18,.22);
+    backdrop-filter:blur(20px);
+    transform:translateY(-115%);
+  }
+  .main-nav.open{transform:translateY(0)}
+  .main-nav>a:not(.header-cta){
+    width:100%;
+    padding:11px 2px;
+    border-bottom:1px solid var(--line);
+    font:500 1.35rem/1.15 var(--serif);
+  }
+  .main-nav>a:not(.header-cta)::after{display:none}
+  .main-nav .header-cta{
+    width:100%;
+    min-height:48px;
+    justify-content:center;
+    margin-top:18px;
+    padding:12px 18px;
+    font:750 .73rem/1 var(--sans);
+  }
+}
